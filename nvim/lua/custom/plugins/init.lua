@@ -3,33 +3,7 @@
 --
 -- See the kickstart.nvim README for more information
 return {
-	"ms-jpq/chadtree",
-	{
-		"serenevoid/kiwi.nvim",
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-		},
-		opts = {
-			{
-				name = "work",
-				path = "/home/username/wiki_1",
-			},
-			{
-				name = "personal",
-				path = "/home/username/wiki_2",
-			},
-		},
-		keys = {
-			{ "<leader>ww", ':lua require("kiwi").open_wiki_index()<cr>', desc = "Open Wiki index" },
-			{
-				"<leader>wp",
-				':lua require("kiwi").open_wiki_index("personal")<cr>',
-				desc = "Open index of personal wiki",
-			},
-			{ "T", ':lua require("kiwi").todo.toggle()<cr>', desc = "Toggle Markdown Task" },
-		},
-		lazy = true,
-	},
+	"nvim-lua/plenary.nvim",
 	{
 		"NeogitOrg/neogit",
 		dependencies = {
@@ -40,36 +14,57 @@ return {
 		config = true,
 	},
 	{
-		"romgrk/barbar.nvim",
-		dependencies = {
-			"lewis6991/gitsigns.nvim",
-			"nvim-tree/nvim-web-devicons",
-		},
-		init = function()
-			vim.g.barbar_auto_setup = false
-		end,
-		opts = {
-			animation = true,
-			insert_at_start = true,
-		},
-		version = "^1.0.0",
-	},
-	{
 		"sontungexpt/stcursorword",
 		event = "VeryLazy",
 		config = true,
 	},
-	{
-		"CWood-sdf/spaceport.nvim",
-		opts = {},
-		lazy = false,
-	},
 	"mateuszwieloch/automkdir.nvim",
-	"rcarriga/nvim-notify",
+	{
+		"rcarriga/nvim-notify",
+		keys = {
+			{
+				"<leader>un",
+				function()
+					require("notify").dismiss({ silent = true, pending = true })
+				end,
+				desc = "Dismiss All Notifications",
+			},
+		},
+		opts = {
+			stages = "static",
+			timeout = 4500,
+			max_height = function()
+				return math.floor(vim.o.lines * 0.75)
+			end,
+			max_width = function()
+				return math.floor(vim.o.columns * 0.75)
+			end,
+			on_open = function(win)
+				vim.api.nvim_win_set_config(win, { zindex = 100 })
+			end,
+		},
+		init = function()
+			vim.notify = require("notify")
+		end,
+	},
 	{
 		"declancm/cinnamon.nvim",
 		config = function()
 			require("cinnamon").setup()
 		end,
+	},
+	{
+		"zk-org/zk-nvim",
+		config = function()
+			require("zk").setup({
+				picker = "telescope",
+			})
+		end,
+	},
+	{
+		"nvim-neorg/neorg",
+		lazy = false, -- Disable lazy loading as some `lazy.nvim` distributions set `lazy = true` by default
+		version = "*", -- Pin Neorg to the latest stable release
+		config = true,
 	},
 }
